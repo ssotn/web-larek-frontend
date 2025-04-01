@@ -177,20 +177,15 @@ export interface ISuccessActions {
   - ```set buttonText``` - сеттэр текста кнопки;
   - ```get price``` - геттэр цены товара.
 
-- CardBasket - класс отображения карточки товара для добавления в корзину;
+- CardBasket - класс отображения карточки товара в корзине;
 
   Конструктор:  
-  - ```constructor(idx: number, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: idx типа number, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_index, _title,_price, _button```. Добавляется обработчик события *click* для ```_button``` или самого container;
+  - ```constructor(idx: number, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: idx типа number, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_index, _title,_price, _button```. Добавляется обработчик события *click* для ```_button```(кнопка удаления);
 
   Методы:
   - ```set title``` - сеттэр заголовка;
-  - ```set description``` - сеттэр описания товара;
-  - ```set image``` - сеттэр изображения товара;
-  - ```set price``` - сеттэр цены товара;
-  - ```set category``` - сеттэр категории товара;
-  - ```set buttonText``` - сеттэр текста кнопки;
-  - ```get price``` - геттэр цены товара.
-  
+  - ```set index``` - сеттэр номера по списку;
+  - ```set price``` - сеттэр цены товара.  
 
 *класс сообщения об успешном заказе*
 - Success - отображение контенита, сообщающего об успешном заказе.
