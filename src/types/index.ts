@@ -18,7 +18,10 @@ export interface IOrder {
     address: string;
     total: number;
     items: string[];
+    payment: PaymentMethod;
 }
+
+export type PaymentMethod = 'cash' | 'card';
 
 //результат заказа
 export interface IOrderResult {
@@ -49,4 +52,9 @@ export interface IBasketView {
 export interface IFormState {
     valid: boolean;
     errors: string[];
+}
+
+export interface IContacts {
+    email: string;
+    phone: string;
 }

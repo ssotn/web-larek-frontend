@@ -55,6 +55,19 @@ yarn build
 
 - IProductItem - описание типа свойств товара;
 - IOrder - описание типа свойств заказа;
+```
+export interface IOrder {
+    email: string;
+    phone: string;
+    address: string;
+    total: number;
+    items: string[];
+    payment: PaymentMethod;
+}
+``` 
+- PaymentMethod - тип метода оплаты;
+```export type PaymentMethod = 'cash' | 'card';```
+
 - IOrderResult - описание типа итога заказа;
 - IAppState - описание типа свойств каталога, корзины, товара.
 - ...список будет дополняться
@@ -81,6 +94,14 @@ export interface IFormState {
     errors: string[];
 }
 ```
+- IContacts - типы формы контактов
+```
+export interface IContacts {
+    email: string;
+    phone: string;
+}
+```
+
 
 ## Описание данных
 **todo:** по мере написания приложения описать поля и методы классов
@@ -137,7 +158,7 @@ export interface IFormState {
   - ```set total``` - сеттэр итоговой суммы заказа;
 
 *формы:*
-- Form -  класс формы - открытие, закрытие, валидация;
+- Form - класс формы - открытие, закрытие, валидация;
 
   Конструктор:  
   - ```constructor(protected container: HTMLFormElement, protected events: IEvents)``` - принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_submit, _errors, _button```. Добавляется обработчик событий *input, submit* для самой формы;
@@ -149,7 +170,22 @@ export interface IFormState {
   - ```render``` - сеттэр итоговой суммы заказа;
 
 - Contacts - класс формы с контактными данными: email и телефон;
+
+  Конструктор:  
+  - ```constructor(container: HTMLFormElement, events: IEvents)``` - Расширяет базовый класс ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events).
+
+  Методы:
+  - ```set phone``` - сеттэр телефона;
+  - ```set email``` - сеттэр email'а;
+
 - Order - класс формы оформления заказа: способ оплаты и адресс доставки.
+
+  Конструктор:  
+  - ```constructor(container: HTMLFormElement, events: IEvents) ``` - Расширяет базовый класс ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events). Инициализируется поле: ```_buttons```(массив кнопок). Для каждой кнопки добавляется обработчик события *click*. По "клику" выставляем нужный класс кнопке, "пробрасываем" событие смены метода оплаты ```payment:changed```.
+
+  Методы:
+  - ```setPaymentMethod``` - переключает класс выбранной кнопки метода оплаты;
+  - ```set address``` - сеттэр email'а;
 
 *модальные окна:*
 - Modal - базовый класс модального окна - отображения и закрытия модальных окон;
