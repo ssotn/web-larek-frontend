@@ -30,26 +30,6 @@ export abstract class Component<T> {
         }
     }
 
-    // Скрыть
-    protected setHidden(element: HTMLElement) {
-        element.style.display = 'none';
-    }
-
-    // Показать
-    protected setVisible(element: HTMLElement) {
-        element.style.removeProperty('display');
-    }
-
-    // Установить изображение с алтернативным текстом
-    protected setImage(element: HTMLImageElement, src: string, alt?: string) {
-        if (element) {
-            element.src = src;
-            if (alt) {
-                element.alt = alt;
-            }
-        }
-    }
-
     // Вернуть корневой DOM-элемент
     render(data?: Partial<T>): HTMLElement {
         Object.assign(this as object, data ?? {});
