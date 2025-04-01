@@ -129,6 +129,14 @@ export interface ISuccessActions {
     onClick: () => void;
 }
 ```
+IWebLarekAPI - тип для апи приложения
+```
+export interface IWebLarekAPI {
+    getProductList: () => Promise<IProductItem[]>;
+    getProductItem: (id: string) => Promise<IProductItem>;
+    orderProducts: (order: IOrder) => Promise<IOrderResult>;
+}
+```
 
 ## Описание данных
 **todo:** по мере написания приложения описать поля и методы классов
@@ -259,5 +267,24 @@ export interface ISuccessActions {
 ### Классы Presenter 
 
 - EventEmitter - базовый класс для подписки на события, брокер событий.
+
 - Api - базовый класс для работы с сервером посредством запросов на получение (GET) и отправку (POST | DELETE) данных;
+
+  Конструктор:
+  - ```constructor(baseUrl: string, options: RequestInit = {})``` - Принимает два параметра: baseUrl типа string и options типа IRequestInit(значение по умолчанию - пустой объект). В теле конструктора вызывается super(container). Инициализируются поля: ```baseUrl, options```. 
+
+  Методы:
+  - ```handleResponse``` - обрабатывает ответ от сервера. Возвращает данные или ошибку.
+  - ```get``` - GET - запрос;
+  - ```post``` - 'POST' | 'PUT' | 'DELETE' - запрос;
+
+
 - WebLarekApi - класс для обмена данными между сервером и моделью данных приложения.
+
+  Конструктор:
+  - ```constructor(cdn: string, baseUrl: string, options?: RequestInit)``` -  Наследуется от базового класса ```Api```. Принимает три параметра: cdn типа string, который является URL CDN, baseUrl типа string и options типа IRequestInit. В теле конструктора вызывается super(baseUrl, options);. Инициализирется поле: ```cdn```. 
+
+  Методы:
+  - ```getProductItem``` - получает информацию о товаре по id.
+  - ```getProductList``` - получает список товаров;
+  - ```orderProducts``` - отправляет заказ.
