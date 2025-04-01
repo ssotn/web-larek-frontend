@@ -34,3 +34,19 @@ export interface IAppState {
 }
 
 //TODO: описать типы для УИ-компонентов ( форм заказа, модалок ) по мере написания приложения
+
+export interface IPage {
+    counter: number;
+    catalog: HTMLElement[];
+    locked: boolean;
+}
+
+export interface IBasketView {
+    items: HTMLElement[];
+    total: number;
+}
+
+export interface IFormState {
+    valid: boolean;
+    errors: string[];
+}

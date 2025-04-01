@@ -59,6 +59,29 @@ yarn build
 - IAppState - описание типа свойств каталога, корзины, товара.
 - ...список будет дополняться
 
+- IPage - тип view страницы:
+```
+export interface IPage {
+    counter: number;
+    catalog: HTMLElement[];
+    locked: boolean;
+}
+```
+- IBasketView - тип view корзины:
+```
+export interface IBasketView {
+    items: HTMLElement[];
+    total: number;
+}
+```
+- IFormState - тип базовой формы
+```
+export interface IFormState {
+    valid: boolean;
+    errors: string[];
+}
+```
+
 ## Описание данных
 **todo:** по мере написания приложения описать поля и методы классов
  
@@ -66,11 +89,12 @@ yarn build
 ### Классы Model 
 
 - Model - абстрактный базовый класс для создания объекта хранения данных;
+
   Конструктор:
   - ```constructor(data: Partial<T>, protected events: IEvents)``` - принимает два параметра: данные для модели и объект событий для уведомления об изменениях в модели.
 
   Методы:
-  - ```emitChanges``` - "вызывает" события при изменении данных
+  - ```emitChanges``` - "вызывает" события при изменении данных.
 
 - AppState - класс для управления состояниями приложения.
  
@@ -79,8 +103,9 @@ yarn build
  
 *базовый класс для работы с DOM:*
 - Component - абстрактный базовый класс для работы с элементами DOM;
+
   Конструктор:  
-  ```protected constructor(protected readonly container: HTMLElement)``` - принимает экземпляр HTML элемента.
+  - ```protected constructor(protected readonly container: HTMLElement)``` - принимает экземпляр HTML элемента.
     
   Методы:
   - ```toggleClass``` - переключает класс в DOM;
@@ -93,10 +118,36 @@ yarn build
 
 *основные страницы:*
 - Page - класс для главной страницы;
+
+  Конструктор:  
+  - ```constructor(container: HTMLElement, protected events: IEvents)``` - принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора инициализируются поля: ```_counter, _catalog, _wrapper, _basket```. Добавляется обработчик события *click* для ```_basket```;
+
+  Методы:
+  - ```set counter``` - сеттэр значения счетчика;
+  - ```set catalog``` - сеттэр каталога;
+  - ```set locked``` - сеттэр состояния блокировки страницы.
+
 - Basket - класс для отображения элементов корзины и её состояния.
+
+  Конструктор:  
+  - ```constructor(container: HTMLElement, protected events: EventEmitter)``` - принимает два параметра: container типа HTMLElement и events типа EventEmitter. В теле конструктора инициализируются поля: ```_list, _total, _button```. Добавляется обработчик события *click* для ```_button```;
+
+  Методы:
+  - ```set items``` - сеттэр списка товаров / отображение "пустой" корзины;
+  - ```set total``` - сеттэр итоговой суммы заказа;
 
 *формы:*
 - Form -  класс формы - открытие, закрытие, валидация;
+
+  Конструктор:  
+  - ```constructor(protected container: HTMLFormElement, protected events: IEvents)``` - принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_submit, _errors, _button```. Добавляется обработчик событий *input, submit* для самой формы;
+
+  Методы:
+  - ```onInputChange``` - сеттэр списка товаров / отображение "пустой" корзины;
+  - ```set valid``` - сеттэр состояния валидности формы;
+  - ```set errors``` - сеттэр текста ошибок для формы;
+  - ```render``` - сеттэр итоговой суммы заказа;
+
 - Contacts - класс формы с контактными данными: email и телефон;
 - Order - класс формы оформления заказа: способ оплаты и адресс доставки.
 
