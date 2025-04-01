@@ -54,6 +54,16 @@ yarn build
 
 
 - IProductItem - описание типа свойств товара;
+```
+export interface IProductItem {
+    id: string; //GUID ?
+    description?: string;
+    image: string;
+    title: string;
+    category: string;
+    price: number | null;
+}
+```
 - IOrder - описание типа свойств заказа;
 ```
 export interface IOrder {
@@ -101,7 +111,24 @@ export interface IContacts {
     phone: string;
 }
 ```
-
+- IModalData - тип контента модального окна
+```
+export interface IModalData {
+    content: HTMLElement;
+}
+```
+- ISuccess - тип контента сообщения об успехе
+```
+export interface ISuccess {
+    total: number;
+}
+```
+- ISuccessActions - тип ожидаемого коллбэка
+```
+export interface ISuccessActions {
+    onClick: () => void;
+}
+```
 
 ## Описание данных
 **todo:** по мере написания приложения описать поля и методы классов
@@ -132,16 +159,50 @@ export interface IContacts {
   - ```toggleClass``` - переключает класс в DOM;
   - ```setText``` - устанавливает текст в свойство textContent;
   - ```setDisabled``` - устанавливает/снимает статус блокировки disabled;
+  - ```setImage``` - устанавливает изображение с альтернативным текстом;
   - ```render``` - возвращает корневой DOM-элемент.
 
 *класс карточки товара:*
 - Card - класс отображения карточки товара;
 
+  Конструктор:  
+  - ```constructor(blockName: string, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: blockName типа string, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_title, _description, _image, _price, _category, _button```. Добавляется обработчик события *click* для ```_button``` или самого container;
+
+  Методы:
+  - ```set title``` - сеттэр заголовка;
+  - ```set description``` - сеттэр описания товара;
+  - ```set image``` - сеттэр изображения товара;
+  - ```set price``` - сеттэр цены товара;
+  - ```set category``` - сеттэр категории товара;
+  - ```set buttonText``` - сеттэр текста кнопки;
+  - ```get price``` - геттэр цены товара.
+
+- CardBasket - класс отображения карточки товара для добавления в корзину;
+
+  Конструктор:  
+  - ```constructor(idx: number, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: idx типа number, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_index, _title,_price, _button```. Добавляется обработчик события *click* для ```_button``` или самого container;
+
+  Методы:
+  - ```set title``` - сеттэр заголовка;
+  - ```set description``` - сеттэр описания товара;
+  - ```set image``` - сеттэр изображения товара;
+  - ```set price``` - сеттэр цены товара;
+  - ```set category``` - сеттэр категории товара;
+  - ```set buttonText``` - сеттэр текста кнопки;
+  - ```get price``` - геттэр цены товара.
+  
+
+*класс сообщения об успешном заказе*
+- Success - отображение контенита, сообщающего об успешном заказе.
+
+  Конструктор:  
+  - ```constructor(container: HTMLElement, synapses: number, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: container типа HTMLElement, synapses типа number и number типа ISuccessActions. В теле конструктора super(container). Инициализируются поля: ```_close, _total```(кнопка "за новыми покупками" и лэйбл с итоговой суммой"). На кнопку ```_close``` добавляется обработчик события *click* и пробрасывается коллбэк actions.
+
 *основные страницы:*
 - Page - класс для главной страницы;
 
   Конструктор:  
-  - ```constructor(container: HTMLElement, protected events: IEvents)``` - принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора инициализируются поля: ```_counter, _catalog, _wrapper, _basket```. Добавляется обработчик события *click* для ```_basket```;
+  - ```constructor(container: HTMLElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора инициализируются поля: ```_counter, _catalog, _wrapper, _basket```. Добавляется обработчик события *click* для ```_basket```;
 
   Методы:
   - ```set counter``` - сеттэр значения счетчика;
@@ -151,7 +212,7 @@ export interface IContacts {
 - Basket - класс для отображения элементов корзины и её состояния.
 
   Конструктор:  
-  - ```constructor(container: HTMLElement, protected events: EventEmitter)``` - принимает два параметра: container типа HTMLElement и events типа EventEmitter. В теле конструктора инициализируются поля: ```_list, _total, _button```. Добавляется обработчик события *click* для ```_button```;
+  - ```constructor(container: HTMLElement, protected events: EventEmitter)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа EventEmitter. В теле конструктора инициализируются поля: ```_list, _total, _button```. Добавляется обработчик события *click* для ```_button```;
 
   Методы:
   - ```set items``` - сеттэр списка товаров / отображение "пустой" корзины;
@@ -161,18 +222,18 @@ export interface IContacts {
 - Form - класс формы - открытие, закрытие, валидация;
 
   Конструктор:  
-  - ```constructor(protected container: HTMLFormElement, protected events: IEvents)``` - принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_submit, _errors, _button```. Добавляется обработчик событий *input, submit* для самой формы;
+  - ```constructor(protected container: HTMLFormElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_submit, _errors, _button```. Добавляется обработчик событий *input, submit* для самой формы;
 
   Методы:
-  - ```onInputChange``` - сеттэр списка товаров / отображение "пустой" корзины;
+  - ```onInputChange``` - вызывает генерируемое событие ````${this.container.name}.${String(field)}:change```, в payload передаёт поле ```field``` и значение ```value```;
   - ```set valid``` - сеттэр состояния валидности формы;
   - ```set errors``` - сеттэр текста ошибок для формы;
-  - ```render``` - сеттэр итоговой суммы заказа;
+  - ```render``` - рендерит форму;
 
 - Contacts - класс формы с контактными данными: email и телефон;
 
   Конструктор:  
-  - ```constructor(container: HTMLFormElement, events: IEvents)``` - Расширяет базовый класс ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events).
+  - ```constructor(container: HTMLFormElement, events: IEvents)``` - Наследуется от базового класса ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events).
 
   Методы:
   - ```set phone``` - сеттэр телефона;
@@ -180,16 +241,24 @@ export interface IContacts {
 
 - Order - класс формы оформления заказа: способ оплаты и адресс доставки.
 
-  Конструктор:  
-  - ```constructor(container: HTMLFormElement, events: IEvents) ``` - Расширяет базовый класс ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events). Инициализируется поле: ```_buttons```(массив кнопок). Для каждой кнопки добавляется обработчик события *click*. По "клику" выставляем нужный класс кнопке, "пробрасываем" событие смены метода оплаты ```payment:changed```.
+  Конструктор:
+  - ```constructor(container: HTMLFormElement, events: IEvents) ``` - Наследуется от базового класса ```Form```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container, events). Инициализируется поле: ```_buttons```(массив кнопок). Для каждой кнопки добавляется обработчик события *click*. По "клику" выставляем нужный класс кнопке, "пробрасываем" событие смены метода оплаты ```payment:changed```.
 
   Методы:
   - ```setPaymentMethod``` - переключает класс выбранной кнопки метода оплаты;
   - ```set address``` - сеттэр email'а;
 
 *модальные окна:*
-- Modal - базовый класс модального окна - отображения и закрытия модальных окон;
-- Success - отображение окна, сообщающего об успешном заказе.
+- Modal - класс модального окна - отображение любого контента в окне, закрытие модального окона;
+
+  Конструктор:
+  - ```constructor(container: HTMLElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_closeButton, _content```.
+
+  Методы:
+  - ```set content``` - сеттэр содержимого модального окна;
+  - ```open``` - открывает окно;
+  - ```close``` - закрывает окно;
+  - ```render``` рендерит модальное окно;
 
 
 ### Классы Presenter 

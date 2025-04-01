@@ -7,7 +7,6 @@ export interface IProductItem {
     image: string;
     title: string;
     category: string;
-    name: string;
     price: number | null;
 }
 
@@ -57,4 +56,21 @@ export interface IFormState {
 export interface IContacts {
     email: string;
     phone: string;
+}
+
+export interface IModalData {
+    content: HTMLElement;
+}
+
+export interface ISuccess {
+    total: number;
+}
+
+export interface ISuccessActions {
+    onClick: () => void;
+}
+
+export interface ICardBasket {
+    title: string;
+    price: number;
 }
