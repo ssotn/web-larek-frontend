@@ -79,8 +79,21 @@ export interface IOrder {
 ```export type PaymentMethod = 'cash' | 'card';```
 
 - IOrderResult - описание типа итога заказа;
-- IAppState - описание типа свойств каталога, корзины, товара.
-- ...список будет дополняться
+```
+export interface IOrderResult {
+    id: number;
+    total: number;
+}
+```
+- IAppState - описание типа состояния приложения каталога, корзины, товара, превью.
+```
+export interface IAppState {
+    catalog: IProductItem[];
+    basket: ICardBasket[];
+    order: IOrder | null;
+    preview: string | null;
+}
+```
 
 - IPage - тип view страницы:
 ```
@@ -153,7 +166,23 @@ export interface IWebLarekAPI {
   - ```emitChanges``` - "вызывает" события при изменении данных.
 
 - AppState - класс для управления состояниями приложения.
- 
+
+  Конструктор 
+  - Наследуется от базового класса ```Model```. Конструктор по умолчанию. Поля ```catalog, basket, order, preview, formErrors```инициализированы значениями по умолчанию.
+
+  Методы:
+    - ```clearBasket``` - очищает товары из корзины;
+    - ```addItemToBasket``` - добавляет товар в корзину;
+    - ```removeItemFromBasket``` - удаляет товар из корзины по id;
+    - ```getTotal``` - возвращает итоговую стоимость товаров в корзине;
+    - ```setCatalog``` - загружает в каталог массив товаров;
+    - ```setOrder``` - передаёт товары из корзины в заказ;
+    - ```setPreview``` - выставляет превью товара на странице;
+    - ```setEmail``` - выставляет email + валидация поля;
+    - ```setPhone``` - выставляет номер телефона + валидация поля;
+    - ```setAddress``` - выставляет адресс + валидация поля;
+    - ```setPaymentMethod``` - выставляет способ оплаты + валидация поля;
+    - ```validateOrder``` - валидация полей форм заказа.
 
 ### Классы View
  
@@ -279,7 +308,7 @@ export interface IWebLarekAPI {
   - ```offAll``` - сбрасывет обработчики событий;
   - ```trigger``` - Сделать коллбек триггер, генерирующий событие при вызове.
 
-- Api - базовый класс для работы с сервером посредством запросов на получение (GET) и отправку (POST | DELETE) данных;
+- Api - базовый класс для работы с сервером посредством запросов на получение (GET) и отправку ('POST' | 'PUT' | 'DELETE') данных;
 
   Конструктор:
   - ```constructor(baseUrl: string, options: RequestInit = {})``` - Принимает два параметра: baseUrl типа string и options типа IRequestInit(значение по умолчанию - пустой объект). В теле конструктора вызывается super(container). Инициализируются поля: ```baseUrl, options```. 
@@ -296,6 +325,6 @@ export interface IWebLarekAPI {
   - ```constructor(cdn: string, baseUrl: string, options?: RequestInit)``` -  Наследуется от базового класса ```Api```. Принимает три параметра: cdn типа string, который является URL CDN, baseUrl типа string и options типа IRequestInit. В теле конструктора вызывается super(baseUrl, options);. Инициализирется поле: ```cdn```. 
 
   Методы:
-  - ```getProductItem``` - получает информацию о товаре по id.
+  - ```getProductItem``` - получает информацию о товаре по id;
   - ```getProductList``` - получает список товаров;
   - ```orderProducts``` - отправляет заказ.

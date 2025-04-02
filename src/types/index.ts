@@ -31,8 +31,9 @@ export interface IOrderResult {
 //само приложение
 export interface IAppState {
     catalog: IProductItem[];
-    basket: string[];
+    basket: ICardBasket[];
     order: IOrder | null;
+    preview: string | null;
 }
 
 //TODO: описать типы для УИ-компонентов ( форм заказа, модалок ) по мере написания приложения

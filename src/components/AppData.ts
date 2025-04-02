@@ -1,4 +1,4 @@
-import { FormErrors, IAppState, IContacts, IOrder, IProductItem } from "../types";
+import { FormErrors, IAppState, ICardBasket, IContacts, IOrder, IProductItem, PaymentMethod } from "../types";
 import { Model } from "./base/model";
 
 export type CatalogChangeEvent = {
@@ -6,8 +6,8 @@ export type CatalogChangeEvent = {
 };
 
 export class AppState extends Model<IAppState> {
-    basket: IProductItem[] = [];
     catalog: IProductItem[] = [];
+    basket: ICardBasket[] = [];
     order: IOrder = {
         email: '',
         phone: '',
@@ -24,6 +24,14 @@ export class AppState extends Model<IAppState> {
 
     }
 
+    addItemToBasket(item: IProductItem) {
+
+    }
+
+    removeItemFromBasket(id: string) {
+
+    }
+
     getTotal() {
 
     }
@@ -36,12 +44,27 @@ export class AppState extends Model<IAppState> {
 
     }
 
-
-    setOrderField(field: keyof Partial<IContacts>, value: string) {
+    setOrder() {
 
     }
 
-    validateContacts() {
+    setPaymentMethod(method: PaymentMethod) {
+
+    }
+  
+    setAddress(address: string) {
+
+    }
+  
+    setEmail(email: string) {
+
+    }
+  
+    setPhone(phone: string) {
+
+    }
+
+    validateOrder() {
         const errors: typeof this.formErrors = {};
         if (!this.order.email) {
             errors.email = 'Необходимо указать email';
@@ -49,13 +72,6 @@ export class AppState extends Model<IAppState> {
         if (!this.order.phone) {
             errors.phone = 'Необходимо указать телефон';
         }
-        this.formErrors = errors;
-        this.events.emit('formErrors:change', this.formErrors);
-        return Object.keys(errors).length === 0;
-    }
-
-    validateOrder() {
-        const errors: typeof this.formErrors = {};
         if (!this.order.payment) {
             errors.payment = 'Необходимо выбрать способ оплаты';
         }
