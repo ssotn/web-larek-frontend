@@ -74,3 +74,5 @@ export interface ICardBasket {
     title: string;
     price: number;
 }
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
