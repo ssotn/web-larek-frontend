@@ -37,7 +37,8 @@ export class AppState extends Model<IAppState> {
     }
 
     setCatalog(items: IProductItem[]) {
-
+        this.catalog = items;
+        this.emitChanges('items:changed', { catalog: this.catalog });
     }
 
     setPreview(item: IProductItem) {

@@ -142,7 +142,7 @@ export interface ISuccessActions {
     onClick: () => void;
 }
 ```
-IWebLarekAPI - тип для апи приложения
+- IWebLarekAPI - тип для апи приложения
 ```
 export interface IWebLarekAPI {
     getProductList: () => Promise<IProductItem[]>;
@@ -225,7 +225,7 @@ export interface IWebLarekAPI {
   - ```set price``` - сеттэр цены товара.  
 
 *класс сообщения об успешном заказе*
-- Success - отображение контенита, сообщающего об успешном заказе.
+- Success - отображение контента, сообщающего об успешном заказе.
 
   Конструктор:  
   - ```constructor(container: HTMLElement, synapses: number, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: container типа HTMLElement, synapses типа number и number типа ISuccessActions. В теле конструктора super(container). Инициализируются поля: ```_close, _total```(кнопка "за новыми покупками" и лэйбл с итоговой суммой"). На кнопку ```_close``` добавляется обработчик события *click* и пробрасывается коллбэк actions.
