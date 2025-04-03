@@ -124,7 +124,7 @@ events.on('basket:change', () => {
         return card.render({ title: item.title, price: item.price});
     });
     basket.total = appData.getTotal();
-   
+    basket.renderWithIndex();
 });
 
 
