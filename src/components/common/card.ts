@@ -13,13 +13,13 @@ export type ICard = IProductItem & {
 
 export class Card extends Component<ICard> {
     protected _title: HTMLElement;
-    protected _description?: HTMLElement;
+    protected _description: HTMLElement;
     protected _image: HTMLImageElement;
     protected _price: HTMLElement;
     protected _category: HTMLElement;
     protected _button?: HTMLButtonElement;
 
-    constructor(blockName: string, container: HTMLElement, events: ISuccessActions) {
+    constructor(blockName: string, container: HTMLElement, actions: ISuccessActions) {
         super(container);
 
         this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
@@ -30,9 +30,9 @@ export class Card extends Component<ICard> {
         this._button = container.querySelector(`.${blockName}__button`);
 
         if (this._button) {
-            this._button.addEventListener('click', events.onClick);
+            this._button.addEventListener('click', actions.onClick);
         } else {
-            container.addEventListener('click', events.onClick);
+            container.addEventListener('click', actions.onClick);
         }
     }
 
@@ -73,30 +73,23 @@ export class Card extends Component<ICard> {
 }
 
 export class CardBasket extends Component<ICardBasket> {
-    protected _index: HTMLElement;
+
     protected _title: HTMLElement;
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
-    constructor(idx: number, container: HTMLElement, events: ISuccessActions) {
+    constructor(container: HTMLElement, actions: ISuccessActions) {
         super(container);
 
-        this._index = ensureElement<HTMLElement>('.basket__item-index', container);
         this._title = ensureElement<HTMLElement>('.card__title', container);
         this._price = ensureElement<HTMLElement>('.card__price', container);
         this._button = ensureElement<HTMLButtonElement>('.basket__item-delete', container);
 
-        this._button.addEventListener('click', events.onClick);
-
-        this.setText(this._index, idx + 1)
+        this._button.addEventListener('click', actions.onClick);
     }
 
     set title(value: string) {
         this.setText(this._title, value)
-    }
-
-    set index(value: number) {
-        this.setText(this._index, value)
     }
 
     set price(value: number) {

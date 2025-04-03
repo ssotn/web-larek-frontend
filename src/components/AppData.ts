@@ -1,4 +1,4 @@
-import { FormErrors, IAppState, ICardBasket, IContacts, IOrder, IProductItem, PaymentMethod } from "../types";
+import { FormErrors, IAppState, ICardBasket, IOrder, IProductItem, PaymentMethod } from "../types";
 import { Model } from "./base/model";
 
 export type CatalogChangeEvent = {
@@ -24,19 +24,25 @@ export class AppState extends Model<IAppState> {
     }
 
     addItemToBasket(item: IProductItem) {
-
+        this.basket.push(item);
+        this.emitChanges('basket:change');
     }
 
     removeItemFromBasket(id: string) {
-
+        this.basket = this.basket.filter((item) => item.id !== id);
+        this.emitChanges('basket:change');
     }
 
     getBasketContent() {
         return this.basket;
     }
 
-    getTotal() {
+    alreadyInBasket(item: IProductItem) {
+        return this.basket.includes(item);
+    }
 
+    getTotal() {
+        return this.basket.reduce((sum, elem) => sum + elem.price, 0);
     }
 
     setCatalog(items: IProductItem[]) {

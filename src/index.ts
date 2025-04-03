@@ -5,11 +5,12 @@ import { EventEmitter } from './components/base/events';
 import { WebLarekAPI } from './components/WebLarekApi';
 import { AppState, CatalogChangeEvent } from './components/AppData';
 
-import { cloneTemplate, ensureElement } from './utils/utils';
+import { cloneTemplate, createElement, ensureElement } from './utils/utils';
 import { API_URL, CDN_URL } from "./utils/constants";
-import { Card, ICard } from './components/common/card';
+import { Card, CardBasket, ICard } from './components/common/card';
 import { Modal } from './components/common/modal';
 import { IProductItem } from './types';
+import { Basket } from './components/common/basket';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
@@ -22,6 +23,8 @@ events.onAll(({ eventName, data }) => {
 // Все шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
+const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 
 // Модель данных приложения
 const appData = new AppState({}, events);
@@ -29,6 +32,9 @@ const appData = new AppState({}, events);
 // Глобальные контейнеры
 const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+
+// Переиспользуемые части интерфейса
+const basket = new Basket(cloneTemplate(basketTemplate), events);
 
 // Дальше идет бизнес-логика
 // Поймали событие, сделали что нужно
@@ -59,7 +65,15 @@ events.on('card:select', (item: IProductItem) => {
 
 events.on('preview:changed', (item: ICard) => {
     if (item) { //показываем карточку в модальном окне
-        const card = new Card('card', cloneTemplate(cardPreviewTemplate), { onClick: () => {} });
+        const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
+            onClick: () => {
+                if (appData.alreadyInBasket(item)) {
+                    events.emit('product:delete', item);
+                } else {
+                    events.emit('product:add', item)
+                }
+            }
+        });
 
         modal.render({
             content: card.render({
@@ -68,12 +82,51 @@ events.on('preview:changed', (item: ICard) => {
                 category: item.category,
                 description: item.description,
                 price: item.price,
+                button: appData.alreadyInBasket(item) ? 'Убрать' : 'В корзину'
             }),
         })
 } else {//закрываем окно
         modal.close();
     }
 });
+
+// Открытие корзины
+events.on('basket:open', () => {
+    modal.render({
+        content: createElement<HTMLElement>('div', {}, [basket.renderWithIndex()]),
+    })
+});
+
+//добавление товара в корзину
+events.on('product:add', (item: IProductItem) => {
+    appData.addItemToBasket(item);
+    modal.close();
+});
+
+//удаление товара из корзины
+events.on('product:delete', (item: IProductItem) => {
+    appData.removeItemFromBasket(item.id);
+    modal.close();
+});
+
+// Отображение содержимого корзины
+events.on('basket:change', () => {
+    const content = appData.getBasketContent();
+    page.counter = content.length;
+    basket.items = content.map((item) => {
+        const card = new CardBasket(cloneTemplate(cardBasketTemplate), {
+            onClick: () => {
+                appData.removeItemFromBasket(item.id);
+                basket.total = appData.getTotal();
+            }
+        });
+
+        return card.render({ title: item.title, price: item.price});
+    });
+    basket.total = appData.getTotal();
+   
+});
+
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {

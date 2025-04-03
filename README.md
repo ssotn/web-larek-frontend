@@ -176,6 +176,7 @@ export interface IWebLarekAPI {
     - ```removeItemFromBasket``` - удаляет товар из корзины по id;
     - ```getTotal``` - возвращает итоговую стоимость товаров в корзине;
     - ```getBasketContent``` - возвращает массив товаров, находящихся в корзине;
+    - ```alreadyInBasket``` - проверяет, есть ли товар в корзине;
     - ```setCatalog``` - загружает в каталог массив товаров;
     - ```setOrder``` - передаёт товары из корзины в заказ;
     - ```setPreview``` - выставляет превью товара на странице;
@@ -205,7 +206,7 @@ export interface IWebLarekAPI {
 - Card - класс отображения карточки товара;
 
   Конструктор:  
-  - ```constructor(blockName: string, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: blockName типа string, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_title, _description, _image, _price, _category, _button```. Добавляется обработчик события *click* для ```_button``` или самого container;
+  - ```constructor(blockName: string, container: HTMLElement, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: blockName типа string, container типа HTMLElement и actions типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_title, _description, _image, _price, _category, _button```. Добавляется обработчик события *click* для ```_button``` или самого container;
 
   Методы:
   - ```set title``` - сеттэр заголовка;
@@ -219,18 +220,20 @@ export interface IWebLarekAPI {
 - CardBasket - класс отображения карточки товара в корзине;
 
   Конструктор:  
-  - ```constructor(idx: number, container: HTMLElement, events: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: idx типа number, container типа HTMLElement и events типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_index, _title,_price, _button```. Добавляется обработчик события *click* для ```_button```(кнопка удаления);
+  - ```constructor(container: HTMLElement, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и actions типа ISuccessActions. В теле конструктора вызывается super(container). В теле конструктора инициализируются поля: ```_title, _price, _button```. Добавляется обработчик события *click* для ```_button```(кнопка удаления);
 
   Методы:
   - ```set title``` - сеттэр заголовка;
-  - ```set index``` - сеттэр номера по списку;
   - ```set price``` - сеттэр цены товара.  
 
 *класс сообщения об успешном заказе*
 - Success - отображение контента, сообщающего об успешном заказе.
 
   Конструктор:  
-  - ```constructor(container: HTMLElement, synapses: number, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает три параметра: container типа HTMLElement, synapses типа number и number типа ISuccessActions. В теле конструктора super(container). Инициализируются поля: ```_close, _total```(кнопка "за новыми покупками" и лэйбл с итоговой суммой"). На кнопку ```_close``` добавляется обработчик события *click* и пробрасывается коллбэк actions.
+  - ```constructor(container: HTMLElement, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement,  и actions типа ISuccessActions. В теле конструктора super(container). Инициализируются поля: ```_close, _total```(кнопка "за новыми покупками" и лэйбл с итоговой суммой"). На кнопку ```_close``` добавляется обработчик события *click* и пробрасывается коллбэк actions.
+
+  Методы:
+  - ```set total``` - сеттэр текста для лэйбла с итоговой суммой;
 
 *основные страницы:*
 - Page - класс для главной страницы;
@@ -246,11 +249,12 @@ export interface IWebLarekAPI {
 - Basket - класс для отображения элементов корзины и её состояния.
 
   Конструктор:  
-  - ```constructor(container: HTMLElement, protected events: EventEmitter)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа EventEmitter. В теле конструктора инициализируются поля: ```_list, _total, _button```. Добавляется обработчик события *click* для ```_button```;
+  - ```constructor(container: HTMLElement, protected events: EventEmitter)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа EventEmitter. В теле конструктора инициализируются поля: ```_list, _total, _button, _index```. Добавляется обработчик события *click* для ```_button```;
 
   Методы:
   - ```set items``` - сеттэр списка товаров / отображение "пустой" корзины;
-  - ```set total``` - сеттэр итоговой суммы заказа.
+  - ```set total``` - сеттэр итоговой суммы заказа;
+  - ```renderWithIndex``` - рендерит нумерованный список товаров.
 
 *формы:*
 - Form - класс формы - открытие, закрытие, валидация;

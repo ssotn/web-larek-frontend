@@ -1,5 +1,5 @@
 //view корзины
-import { createElement, ensureElement } from "../../utils/utils";
+import { createElement, ensureAllElements, ensureElement } from "../../utils/utils";
 import { Component } from "../base/component";
 import { EventEmitter } from "../base/events";
 import { IBasketView } from "../../types/index";
@@ -9,6 +9,7 @@ export class Basket extends Component<IBasketView> {
     protected _list: HTMLElement;
     protected _total: HTMLElement;
     protected _button: HTMLButtonElement;
+    protected _index: HTMLSpanElement[];
 
     constructor(container: HTMLElement, protected events: EventEmitter) {
         super(container);
@@ -39,4 +40,15 @@ export class Basket extends Component<IBasketView> {
     set total(total: number) {
         this.setText(this._total, total + ' синапсов');
     }
+
+    renderWithIndex(): HTMLElement {
+        this._index = ensureAllElements<HTMLSpanElement>('.basket__item-index', this.container);
+
+        this._index.forEach((item, indx) => {
+            this.setText(item, String(indx + 1));
+        });
+
+        return super.render();
+    }
+
 }
