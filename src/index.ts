@@ -20,7 +20,8 @@ const api = new WebLarekAPI(CDN_URL, API_URL);
 
 // Чтобы мониторить все события, для отладки
 events.onAll(({ eventName, data }) => {
-    console.log(eventName, data);
+    //раскомментировать для отладки
+    //console.log(eventName, data);
 })
 
 // Все шаблоны
