@@ -20,7 +20,9 @@ export class AppState extends Model<IAppState> {
     formErrors: FormErrors = {};
 
     clearBasket() {
-
+        this.basket = [];
+        this.refreshOrder();
+        this.emitChanges('basket:change');
     }
 
     addItemToBasket(item: IProductItem) {
@@ -56,7 +58,19 @@ export class AppState extends Model<IAppState> {
     }
 
     setOrder() {
+        this.order.total = this.getTotal();
+        this.order.items = this.getBasketContent().map(item => item.id);
+    }
 
+    private refreshOrder() {
+        this.order = {
+            email: '',
+            phone: '',
+            items: [],
+            payment: 'card',
+            address: '',
+            total: 0
+        }
     }
 
     setPaymentMethod(method: PaymentMethod) {
@@ -68,7 +82,7 @@ export class AppState extends Model<IAppState> {
         this.validateOrderForm();
     }
 
-    validateOrderForm() {
+    private validateOrderForm() {
         const errors: typeof this.formErrors = {};        
 
         if (!this.order.address) {
@@ -90,7 +104,7 @@ export class AppState extends Model<IAppState> {
         this.validateContactsForm();
     }
 
-    validateContactsForm() {
+    private validateContactsForm() {
         const errors: typeof this.formErrors = {};
 
         if (!this.order.email) {

@@ -13,6 +13,7 @@ import { IOrder, IProductItem } from './types';
 import { Basket } from './components/common/basket';
 import { Order } from './components/common/order';
 import { Contacts } from './components/common/contacts';
+import { Success } from './components/common/success';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
@@ -29,6 +30,7 @@ const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 // Модель данных приложения
 const appData = new AppState({}, events);
@@ -183,6 +185,28 @@ events.on('contactsFormErrors:change', (errors: Partial<IOrder>) => {
     contacts.errors = Object.values({ email, phone }).filter(i => !!i).join('; ');
 });
 
+// По сабмиту формы контактов отправляем заказ на сервер. В случае успеха показываем виджет успеха
+events.on('contacts:submit', () => {
+    appData.setOrder();
+    api.orderProducts(appData.order)
+        .then(resp => {
+            const { total } = resp;
+            const success = new Success(cloneTemplate(successTemplate), {
+                onClick: () => {
+                    appData.clearBasket();
+                    events.emit('basket:change');
+                    modal.close();
+                }
+            });
+
+            modal.render({ content: success.render({total: total}) });
+            appData.clearBasket();
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+});
+
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {
     page.locked = true;
@@ -193,7 +217,7 @@ events.on('modal:close', () => {
     page.locked = false;
 });
 
-// Получаем лоты с сервера
+// Получаем товары с сервера
 api.getProductList()
     .then(appData.setCatalog.bind(appData))
     .catch(err => {
