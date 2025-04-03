@@ -9,8 +9,10 @@ import { cloneTemplate, createElement, ensureElement } from './utils/utils';
 import { API_URL, CDN_URL } from "./utils/constants";
 import { Card, CardBasket, ICard } from './components/common/card';
 import { Modal } from './components/common/modal';
-import { IProductItem } from './types';
+import { IOrder, IProductItem } from './types';
 import { Basket } from './components/common/basket';
+import { Order } from './components/common/order';
+import { Contacts } from './components/common/contacts';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
@@ -25,6 +27,8 @@ const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
 // Модель данных приложения
 const appData = new AppState({}, events);
@@ -35,10 +39,11 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
 const basket = new Basket(cloneTemplate(basketTemplate), events);
+const order = new Order(cloneTemplate(orderTemplate), events);
+const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 
 // Дальше идет бизнес-логика
 // Поймали событие, сделали что нужно
-
 
 // Изменились элементы каталога
 events.on<CatalogChangeEvent>('items:changed', () => {
@@ -127,6 +132,56 @@ events.on('basket:change', () => {
     basket.renderWithIndex();
 });
 
+//работаем с формами для отправки заказа:
+//Открытие формы заказа в модальном окне
+events.on('order:open', () => {
+    order.setPaymentMethod('card');
+    appData.setPaymentMethod('card');
+    modal.render({
+        content: order.render({
+            address: '',
+            valid: false,
+            errors: [],
+        }),
+    });
+});
+
+// Измение адреса доставки
+events.on('order.address:change', (data: { value: string }) => appData.setAddress(data.value));
+
+// Изменение валидности формы заказа
+events.on('orderFormErrors:change', (errors: Partial<IOrder>) => {
+    const { payment, address } = errors;
+
+    order.valid = !payment && !address;
+    order.errors = Object.values({ payment, address }).filter(i => !!i).join('; ');
+});
+
+// По сабмиту формы заказа открываем форму контактов
+events.on('order:submit', () => {
+    modal.render({
+        content: contacts.render({
+            phone: '',
+            email: '',
+            valid: false,
+            errors: [],
+        }),
+    });
+});
+
+// Измение email'а
+events.on('contacts.email:change', (data: { value: string }) => appData.setEmail(data.value));
+
+// Измение телефона
+events.on('contacts.phone:change', (data: { value: string }) => appData.setPhone(data.value));
+
+// Изменение валидности формы контактов
+events.on('contactsFormErrors:change', (errors: Partial<IOrder>) => {
+    const { email, phone } = errors;
+
+    contacts.valid = !email && !phone;
+    contacts.errors = Object.values({ email, phone }).filter(i => !!i).join('; ');
+});
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {

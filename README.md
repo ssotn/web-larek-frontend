@@ -184,7 +184,8 @@ export interface IWebLarekAPI {
     - ```setPhone``` - выставляет номер телефона + валидация поля;
     - ```setAddress``` - выставляет адресс + валидация поля;
     - ```setPaymentMethod``` - выставляет способ оплаты + валидация поля;
-    - ```validateOrder``` - валидация полей форм заказа.
+    - ```validateOrderForm``` - валидация полей формы заказа;
+    - ```validateContactsForm``` - валидация полей формы заказа;
 
 
 ### Классы View

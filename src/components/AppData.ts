@@ -1,4 +1,4 @@
-import { FormErrors, IAppState, ICardBasket, IOrder, IProductItem, PaymentMethod } from "../types";
+import { FormErrors, IAppState, IOrder, IProductItem, PaymentMethod } from "../types";
 import { Model } from "./base/model";
 
 export type CatalogChangeEvent = {
@@ -60,37 +60,49 @@ export class AppState extends Model<IAppState> {
     }
 
     setPaymentMethod(method: PaymentMethod) {
-
+        this.order.payment = method;
     }
   
     setAddress(address: string) {
+        this.order.address = address;
+        this.validateOrderForm();
+    }
 
+    validateOrderForm() {
+        const errors: typeof this.formErrors = {};        
+
+        if (!this.order.address) {
+            errors.address = 'Необходимо указать адрес';
+        }
+        this.formErrors = errors;
+        this.events.emit('orderFormErrors:change', this.formErrors);
+
+        return Object.keys(errors).length === 0;
     }
   
     setEmail(email: string) {
-
+        this.order.email = email;
+        this.validateContactsForm();
     }
   
     setPhone(phone: string) {
-
+        this.order.phone = phone;
+        this.validateContactsForm();
     }
 
-    validateOrder() {
+    validateContactsForm() {
         const errors: typeof this.formErrors = {};
+
         if (!this.order.email) {
             errors.email = 'Необходимо указать email';
         }
         if (!this.order.phone) {
             errors.phone = 'Необходимо указать телефон';
         }
-        if (!this.order.payment) {
-            errors.payment = 'Необходимо выбрать способ оплаты';
-        }
-        if (!this.order.address) {
-            errors.address = 'Необходимо указать адрес';
-        }
+
         this.formErrors = errors;
-        this.events.emit('formErrors:change', this.formErrors);
+        this.events.emit('contactsFormErrors:change', this.formErrors);
+
         return Object.keys(errors).length === 0;
     }
 }
