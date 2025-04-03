@@ -227,7 +227,7 @@ export interface IWebLarekAPI {
   - ```set price``` - сеттэр цены товара.  
 
 *класс сообщения об успешном заказе*
-- Success - отображение контента, сообщающего об успешном заказе.
+- Success - отображение контента, сообщающего об успешном заказе в модальном окне.
 
   Конструктор:  
   - ```constructor(container: HTMLElement, actions: ISuccessActions)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement,  и actions типа ISuccessActions. В теле конструктора super(container). Инициализируются поля: ```_close, _total```(кнопка "за новыми покупками" и лэйбл с итоговой суммой"). На кнопку ```_close``` добавляется обработчик события *click* и пробрасывается коллбэк actions.
@@ -235,17 +235,7 @@ export interface IWebLarekAPI {
   Методы:
   - ```set total``` - сеттэр текста для лэйбла с итоговой суммой;
 
-*основные страницы:*
-- Page - класс для главной страницы;
-
-  Конструктор:  
-  - ```constructor(container: HTMLElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора инициализируются поля: ```_counter, _catalog, _wrapper, _basket```. Добавляется обработчик события *click* для ```_basket```;
-
-  Методы:
-  - ```set counter``` - сеттэр значения счетчика;
-  - ```set catalog``` - сеттэр каталога;
-  - ```set locked``` - сеттэр состояния блокировки страницы.
-
+*класс для отображения элементов корзины в модаьном окне:*  
 - Basket - класс для отображения элементов корзины и её состояния.
 
   Конструктор:  
@@ -256,8 +246,19 @@ export interface IWebLarekAPI {
   - ```set total``` - сеттэр итоговой суммы заказа;
   - ```renderWithIndex``` - рендерит нумерованный список товаров.
 
+*основная страница:*
+- Page - класс для главной страницы;
+
+  Конструктор:  
+  - ```constructor(container: HTMLElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLElement и events типа IEvents. В теле конструктора инициализируются поля: ```_counter, _catalog, _wrapper, _basket```. Добавляется обработчик события *click* для ```_basket```;
+
+  Методы:
+  - ```set counter``` - сеттэр значения счетчика;
+  - ```set catalog``` - сеттэр каталога;
+  - ```set locked``` - сеттэр состояния блокировки страницы.
+
 *формы:*
-- Form - класс формы - открытие, закрытие, валидация;
+- Form - базовый класс формы;
 
   Конструктор:  
   - ```constructor(protected container: HTMLFormElement, protected events: IEvents)``` - Наследуется от базового класса ```Component```. Принимает два параметра: container типа HTMLFormElement и events типа IEvents. В теле конструктора вызывается super(container). Инициализируются поля: ```_submit, _errors, _button```. Добавляется обработчик событий *input, submit* для самой формы;
@@ -286,7 +287,7 @@ export interface IWebLarekAPI {
   - ```setPaymentMethod``` - переключает класс выбранной кнопки метода оплаты;
   - ```set address``` - сеттэр email'а.
 
-*модальные окна:*
+*модальное окно:*
 - Modal - класс модального окна - отображение любого контента в окне, закрытие модального окона;
 
   Конструктор:
