@@ -16,7 +16,8 @@ const stylesHandler = MiniCssExtractPlugin.loader;
 
 const config = {
   entry: "./src/index.ts",
-  devtool: "source-map",
+  //devtool: "source-map",
+  devtool: 'eval-cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, "dist"),
   },

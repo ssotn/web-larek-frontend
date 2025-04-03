@@ -7,7 +7,7 @@ export type CatalogChangeEvent = {
 
 export class AppState extends Model<IAppState> {
     catalog: IProductItem[] = [];
-    basket: ICardBasket[] = [];
+    basket: IProductItem[] = [];
     order: IOrder = {
         email: '',
         phone: '',
@@ -18,7 +18,6 @@ export class AppState extends Model<IAppState> {
     };
     preview: string | null;
     formErrors: FormErrors = {};
-
 
     clearBasket() {
 
@@ -32,6 +31,10 @@ export class AppState extends Model<IAppState> {
 
     }
 
+    getBasketContent() {
+        return this.basket;
+    }
+
     getTotal() {
 
     }
@@ -42,7 +45,8 @@ export class AppState extends Model<IAppState> {
     }
 
     setPreview(item: IProductItem) {
-
+        this.preview = item.id;
+        this.emitChanges('preview:changed', item);
     }
 
     setOrder() {

@@ -67,7 +67,7 @@ export class Card extends Component<ICard> {
       this.toggleClass(this._category, `card__category${cardCategory[value]}`, true);
     }
 
-    set buttonText(value: string) {
+    set button(value: string) {
         this.setText(this._button, value)
     }
 }
